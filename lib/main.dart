@@ -24,12 +24,10 @@ class _MyAppState extends State<MyApp> {
     ['', ''],
   ];
   var count = 0;
-
   var x = [];
   var z = [];
   var w = [];
-
-  var win = [
+  final win = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -39,11 +37,61 @@ class _MyAppState extends State<MyApp> {
     [0, 4, 8],
     [2, 4, 6]
   ];
+  onTap(i) {
+    if (w.isEmpty && (x.length + z.length) < 9) {
+      count++;
+      if (count.isOdd) {
+        x.add(i);
+        if (x.length > 2) {
+          var index = 0;
+          while (index < win.length && w.isEmpty) {
+            var arr = win[index];
+            var every = true;
+            for (int id in arr) {
+              if (!x.contains(id)) every = false;
+            }
+            if (every) w = arr;
+            index++;
+          }
+          if (w.isNotEmpty) {
+            setState(() {
+              for (int id in w) {
+                map[id][1] = 'X';
+              }
+            });
+          }
+        }
+      } else {
+        z.add(i);
+        if (z.length > 2) {
+          var index = 0;
+          while (index < win.length && w.isEmpty) {
+            var arr = win[index];
+            var every = true;
+            for (int id in arr) {
+              if (!z.contains(id)) every = false;
+            }
+            if (every) w = arr;
+            index++;
+          }
+          if (w.isNotEmpty) {
+            setState(() {
+              for (int id in w) {
+                map[id][1] = 'O';
+              }
+            });
+          }
+        }
+      }
+      setState(() {
+        map[i][0] = count.isOdd ? 'X' : 'O';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     const title = 'Tic-tac-toe';
-
     return MaterialApp(
       title: title,
       theme: ThemeData(
@@ -76,69 +124,7 @@ class _MyAppState extends State<MyApp> {
                       9,
                       (i) => GestureDetector(
                         onTap: () {
-                          if (w.isEmpty && (x.length + z.length) < 9) {
-                            count++;
-
-                            if (count.isOdd) {
-                              x.add(i);
-
-                              if (x.length > 2) {
-                                var index = 0;
-
-                                while (index < win.length && w.isEmpty) {
-                                  var arr = win[index];
-                                  var every = true;
-                                  for (int id in arr) {
-                                    if (!x.contains(id)) {
-                                      every = false;
-                                    }
-                                  }
-                                  if (every) {
-                                    w = arr;
-                                  }
-                                  index++;
-                                }
-                                if (w.isNotEmpty) {
-                                  setState(() {
-                                    for (int id in w) {
-                                      map[id][1] = 'X';
-                                    }
-                                  });
-                                }
-                              }
-                            } else {
-                              z.add(i);
-
-                              if (z.length > 2) {
-                                var index = 0;
-
-                                while (index < win.length && w.isEmpty) {
-                                  var arr = win[index];
-                                  var every = true;
-                                  for (int id in arr) {
-                                    if (!z.contains(id)) {
-                                      every = false;
-                                    }
-                                  }
-                                  if (every) {
-                                    w = arr;
-                                  }
-                                  index++;
-                                }
-                                if (w.isNotEmpty) {
-                                  setState(() {
-                                    for (int id in w) {
-                                      map[id][1] = 'O';
-                                    }
-                                  });
-                                }
-                              }
-                            }
-
-                            setState(() {
-                              map[i][0] = count.isOdd ? 'X' : 'O';
-                            });
-                          }
+                          onTap(i);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -158,28 +144,32 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      map = [
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                        ['', ''],
-                      ];
-                      count = 0;
-                      x = [];
-                      z = [];
-                      w = [];
-                    });
-                  },
-                  child: const Text('Clear'),
-                ),
+                x.length + z.length == 0
+                    ? const SizedBox(
+                        height: 32,
+                      )
+                    : ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            map = [
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                              ['', ''],
+                            ];
+                            count = 0;
+                            x = [];
+                            z = [];
+                            w = [];
+                          });
+                        },
+                        child: const Text('Start again'),
+                      ),
               ],
             ),
           )),
