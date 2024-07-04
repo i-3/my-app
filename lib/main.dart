@@ -5,14 +5,12 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:latlong2/latlong.dart';
 
 void main() {
-  // print('Let\'s go');
-
+  // print('Let\'s go!');
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -36,9 +34,7 @@ class MyApp extends StatelessWidget {
 class MyAppState with ChangeNotifier {
   String _name = '';
   var selectedIndex = 0;
-
   get getName => _name;
-
   void setName(String name) {
     _name = name;
     notifyListeners();
@@ -52,12 +48,10 @@ class MyAppState with ChangeNotifier {
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pass = '';
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('AuthScreen'),
@@ -117,11 +111,9 @@ class AuthScreen extends StatelessWidget {
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Hi, ${appState._name}'),
@@ -192,9 +184,23 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                    child: appState.selectedIndex == 0
-                        ? const TicTacToe()
-                        : const Placeholder()),
+                  child: appState.selectedIndex == 0
+                      ? const TicTacToe()
+                      : FlutterMap(
+                          options: const MapOptions(
+                            initialCenter: LatLng(56.95, 24.1),
+                            initialZoom: 12.0,
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName: 'com.example.app',
+                              tileProvider: CancellableNetworkTileProvider(),
+                            ),
+                          ],
+                        ),
+                ),
               ],
             );
           }
@@ -206,14 +212,13 @@ class HomeScreen extends StatelessWidget {
 
 class TicTacToe extends StatefulWidget {
   const TicTacToe({super.key});
-
   @override
   State<TicTacToe> createState() => _TicTacToeState();
 }
 
 getDefault() {
   var l = [];
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 9; i++) {
     l.add(['', '']);
   }
   return l;
